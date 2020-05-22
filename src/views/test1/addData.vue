@@ -193,7 +193,7 @@ export default {
         // maxmin: true,
         // btn: "确定",
         shade: false, //是否显示遮罩
-        area: ["320px", "482px"],
+        area: ["320px", "400px"],
         title: "管理",
         cancel: () => {
           //关闭事件
