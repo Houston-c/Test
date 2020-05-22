@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img :src="imageUrl" alt height="200px" width="200px"/>
+    <img :src="imageUrl" alt height="300px" width="300px"/>
   </div>
 </template>
 <script>
