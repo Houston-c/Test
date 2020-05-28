@@ -12,7 +12,6 @@ Vue.config.productionTip = false
 import layer from '@/plugins/vue-layer/index.js';
 Vue.prototype.$layer = layer(Vue);
 
-
 new Vue({
   router,
   store,

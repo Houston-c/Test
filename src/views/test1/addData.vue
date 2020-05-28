@@ -1,81 +1,73 @@
 <template>
   <div class="wrapper">
-    <!--        <div class="gjTree" ref="gjTree">-->
-    <!--            <div v-for="(item,index) in gjTreeData" :key="index">-->
-    <!--                <div class="treeItem" @click="gjTreeClick(item,index)">{{item.text}}</div>-->
-    <!--            </div>-->
-    <!--        </div>-->
     <div class="bimModel">
-      <da-cheng :width="bimModelWidth" :height="930" ref="ActiveX"></da-cheng>
+      <da-cheng :width="bimWidth" :height="screenHeight" ref="ActiveX"></da-cheng>
     </div>
-    <div class="manageInfo">
-      <div class="title">管理信息</div>
-      <el-form
-        :model="addData"
-        ref="addData"
-        :rules="rules"
-        label-width="80px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="标记内容" prop="content">
-          <el-input v-model="addData.content"></el-input>
-        </el-form-item>
-        <el-form-item label="标记名" prop="name">
-          <el-input v-model="addData.name"></el-input>
-        </el-form-item>
-        <el-form-item label="图片">
-          <el-upload
-            action
-            list-type="picture-card"
-            :on-change="onUploadChange"
-            :before-upload="beforeUpload"
-            :on-preview="handlePictureCardPreview"
-            :auto-upload="false"
-          >
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="视频">
-          <el-upload
-            class="avatar-uploader el-upload--text"
-            :action="uploadUrl"
-            :show-file-list="false"
-            accept=".mp4"
-            :data="postData"
-            :on-success="handleVideoSuccess"
-            :before-upload="beforeUploadVideo"
-            :on-progress="uploadVideoProcess"
-          >
-            <video
-              v-if="videoForm.showVideoPath !='' && !videoFlag"
-              :src="videoForm.showVideoPath"
-              class="avatar video-avatar"
-              controls="controls"
-            >您的浏览器不支持视频播放</video>
-            <i
-              v-else-if="videoForm.showVideoPath =='' && !videoFlag"
-              class="el-icon-plus avatar-uploader-icon"
-            ></i>
-            <el-progress
-              v-if="videoFlag == true"
-              type="circle"
-              :percentage="videoUploadPercent"
-              style="margin-top:30px;"
-            ></el-progress>
-            <el-button
-              class="video-btn"
-              slot="trigger"
-              size="small"
-              v-if="isShowUploadVideo"
-              type="primary"
-            >选取文件</el-button>
-          </el-upload>
-          <P v-if="isShowUploadVideo" class="text">请保证视频格式正确，且不超过20M</P>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addMarker()">添加标记</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="manageInfo" :style="{width:manageInfoWidth+'px'}">
+      <div id="manageBorder"></div>
+      <div style="display:flex;flex-direction: column">
+        <div class="title">管理信息</div>
+        <el-form :model="addData" ref="addData" :rules="rules" label-width="80px">
+          <el-form-item label="标记内容" prop="content">
+            <el-input v-model="addData.content" placeholder="请输入标记内容"></el-input>
+          </el-form-item>
+          <el-form-item label="标记名" prop="name">
+            <el-input v-model="addData.name" placeholder="请输入标记名"></el-input>
+          </el-form-item>
+          <el-form-item label="图片">
+            <el-upload
+              action
+              list-type="picture-card"
+              :on-change="onUploadChange"
+              :before-upload="beforeUpload"
+              :on-preview="handlePictureCardPreview"
+              :auto-upload="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="视频">
+            <el-upload
+              class="avatar-uploader el-upload--text"
+              :action="uploadUrl"
+              :show-file-list="false"
+              accept=".mp4"
+              :data="postData"
+              :on-success="handleVideoSuccess"
+              :before-upload="beforeUploadVideo"
+              :on-progress="uploadVideoProcess"
+            >
+              <video
+                v-if="videoForm.showVideoPath !='' && !videoFlag"
+                :src="videoForm.showVideoPath"
+                class="avatar video-avatar"
+                controls="controls"
+              >您的浏览器不支持视频播放</video>
+              <i
+                v-else-if="videoForm.showVideoPath =='' && !videoFlag"
+                class="el-icon-plus avatar-uploader-icon"
+              ></i>
+              <el-progress
+                v-if="videoFlag == true"
+                type="circle"
+                :percentage="videoUploadPercent"
+                style="margin-top:30px;"
+              ></el-progress>
+              <el-button
+                class="video-btn"
+                slot="trigger"
+                size="small"
+                v-if="isShowUploadVideo"
+                type="primary"
+              >选取文件</el-button>
+            </el-upload>
+            <P v-if="isShowUploadVideo" class="text">请保证视频格式正确，且不超过20M</P>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="addMarker()">添加标记</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -91,6 +83,8 @@ export default {
   data() {
     return {
       screenWidth: document.body.clientWidth,
+      screenHeight: document.body.clientHeight,
+      bimWidth: document.body.clientWidth * 0.7,
       addData: {},
       rules: {
         content: [
@@ -129,16 +123,17 @@ export default {
         showVideoPath: ""
       },
       postData: {
-        token:
-          "RXDZ4MnqIrOkTRNhDFkN1LLQ0q58EApAOBI10AlV:iqGo9fOU2-eCBcKriSZNP72qwx8=:eyJzY29wZSI6ImhjejIwNiIsImRlYWRsaW5lIjoxNTg5ODg0NTE3fQ=="
+        token: ""
       },
       imageData: [],
       videoData: []
     };
   },
   computed: {
-    bimModelWidth() {
-      return this.screenWidth * 0.7;
+    manageInfoWidth: {
+      get() {
+        return this.screenWidth - this.bimWidth;
+      }
     }
   },
   mounted() {
@@ -146,10 +141,13 @@ export default {
     window.onresize = () => {
       return (() => {
         window.screenWidth = document.body.clientWidth;
+        window.screenHeight = document.body.clientHeight;
         that.screenWidth = window.screenWidth;
+        that.screenHeight = window.screenHeight;
         console.log(that.screenWidth);
       })();
     };
+    this.dragControllerDiv();
   },
   watch: {
     screenWidth(val) {
@@ -167,12 +165,20 @@ export default {
       }
     }
   },
+  created() {
+    var token;
+    var policy = {};
+    var bucketName = "hcz206";
+    var AK = "RXDZ4MnqIrOkTRNhDFkN1LLQ0q58EApAOBI10AlV";
+    var SK = "_MmaIWLsBFuKzPJ7Bj3l9DwoyFzAmqXCsEGmoqP2";
+    var deadline = Math.round(new Date().getTime() / 1000) + 3600;
+    policy.scope = bucketName;
+    policy.deadline = deadline;
+    token = genUpToken(AK, SK, policy);
+    console.log(token);
+    this.postData.token = token;
+  },
   methods: {
-    gjTreeClick(item, index) {
-      console.log(this.manageInfo[index]);
-      this.$refs.ActiveX.locateCamTo(item.location);
-      this.showInfo = this.manageInfo[index];
-    },
     handlePictureCardPreview(file) {
       let content = require(`./imageShow.vue`).default;
       this.$layer.iframe({
@@ -203,7 +209,7 @@ export default {
     },
     onUploadChange(file) {
       let that = this;
-      var reader = new FileReader();
+      let reader = new FileReader();
       console.log(file);
       reader.readAsDataURL(file.raw);
       reader.onload = function(e) {
@@ -227,7 +233,7 @@ export default {
     },
     beforeUploadVideo(file) {
       let that = this;
-      var fileSize = file.size / 1024 / 1024 < 50;
+      let fileSize = file.size / 1024 / 1024 < 50;
       if (
         [
           "video/mp4",
@@ -247,7 +253,7 @@ export default {
         return false;
       }
       this.isShowUploadVideo = false;
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = function(e) {
         // console.log(e.target.result); //base64数据
@@ -284,10 +290,46 @@ export default {
         this.$refs.ActiveX.ExitSymbol_onclick();
         let imageData = this.imageData;
         let videoData = this.videoData;
-        console.log(imageData, videoData);
         let json = { SymbolText, SymbolName, imageData, videoData };
         console.log(json);
       }
+    },
+    dragControllerDiv: function() {
+      let that = this;
+      let info = document.getElementsByClassName("manageInfo")[0];
+      let oBox = document.getElementById("manageBorder");
+      oBox.onmousedown = function(e) {
+        e = e || event;
+        let x = e.clientX;
+        let oBoxL = info.offsetLeft;
+        let oBoxW = info.offsetWidth;
+
+        let d = 0;
+        if (x < oBoxL + 10) {
+          d = "left";
+        }
+        document.onmousemove = function(e) {
+          e = e || event;
+          let xx = e.clientX;
+          if (d == "left") {
+            //信息框宽度最小为300,信息框左侧宽度最小为800
+            let maxWidth = that.screenWidth - 800;
+            let boxWidth = oBoxW + x - xx;
+            if (boxWidth > 300 && boxWidth < maxWidth) {
+              info.style.width = boxWidth + "px";
+              that.bimWidth = that.screenWidth - boxWidth;
+            }
+          }
+          return false;
+        };
+        document.onmouseup = function() {
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+      };
     }
   }
 };
@@ -295,10 +337,13 @@ export default {
 
 <style scoped>
 .wrapper {
+  margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   display: flex;
-  /*justify-content: space-around;*/
+  justify-content: space-between;
+  overflow: hidden;
 }
 
 .bimModel {
@@ -306,9 +351,19 @@ export default {
   flex-direction: column;
 }
 
+#manageBorder {
+  width: 10px;
+  height: 100%;
+  background-color: transparent;
+  /*background-color: #000;*/
+}
+
 .manageInfo {
-  width: 300px;
-  margin: 0 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: calc(100vh - 2px);
+  display: flex;
 }
 
 .title {
